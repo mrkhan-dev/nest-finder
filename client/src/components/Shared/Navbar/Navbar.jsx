@@ -17,13 +17,11 @@ const Navbar = () => {
             {/* Logo */}
             <Link className="flex items-center gap-4" to="/">
               <img
-                // className='hidden md:block'
+                className="hidden md:block w-10 h-10"
                 src="https://i.ibb.co.com/1qp92F1/room.png"
                 alt="logo"
-                width="50"
-                height="50"
               />
-              <h4 className="text-4xl font-semibold text-[#F43F5E]">
+              <h4 className="md:text-4xl text-xl font-semibold text-[#F43F5E]">
                 NestFinder
               </h4>
             </Link>

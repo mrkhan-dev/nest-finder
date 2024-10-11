@@ -37,7 +37,6 @@ const verifyToken = async (req, res, next) => {
 };
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.aeb0oh8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-console.log(uri);
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -48,6 +47,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    const roomsCollection = client.db("nest-finder").collection("rooms");
+
     // auth related api
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -78,6 +79,22 @@ async function run() {
       }
     });
 
+    // get all rooms
+    app.get("/rooms", async (req, res) => {
+      const category = req.query.category;
+      let query = {};
+      if (category && category !== "null") query = {category};
+      const result = await roomsCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // get single room
+    app.get("/room/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await roomsCollection.findOne(query);
+      res.send(result);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ping: 1});
     console.log(
