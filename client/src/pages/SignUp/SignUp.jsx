@@ -134,7 +134,7 @@ const SignUp = () => {
             <button
               disabled={loading}
               type="submit"
-              className="bg-rose-500 w-full rounded-md py-3 text-white"
+              className="bg-rose-500 disabled:cursor-not-allowed w-full rounded-md py-3 text-white"
             >
               {loading ? (
                 <TbFidgetSpinner className="animate-spin m-auto" />
