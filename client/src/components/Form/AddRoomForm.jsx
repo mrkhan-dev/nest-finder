@@ -1,18 +1,9 @@
-import {useState} from "react";
 import {categories} from "../Categories/CategoriesData";
 import {DateRange} from "react-date-range";
-const AddRoomForm = () => {
-  const [state, setState] = useState([
-    {
-      startDate: new Date(),
-      endDate: null,
-      key: "selection",
-    },
-  ]);
-
+const AddRoomForm = ({dates, handleDates, handleSubmit, setImagePreview}) => {
   return (
     <div className="w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="space-y-6">
             <div className="space-y-1 text-sm">
@@ -52,12 +43,11 @@ const AddRoomForm = () => {
               </label>
               {/* Calender */}
               <DateRange
-                showDateDisplay={false}
                 rangeColors={["#F43F5E"]}
                 editableDateInputs={true}
-                onChange={(item) => setState([item.selection])}
+                onChange={(item) => handleDates(item)}
                 moveRangeOnFirstSelection={false}
-                ranges={state}
+                ranges={[dates]}
               />
             </div>
           </div>
@@ -83,6 +73,9 @@ const AddRoomForm = () => {
                     <input
                       className="text-sm cursor-pointer w-36 hidden"
                       type="file"
+                      onChange={(e) => {
+                        setImagePreview(URL.createObjectURL(e.target.files[0]));
+                      }}
                       name="image"
                       id="image"
                       accept="image/*"
