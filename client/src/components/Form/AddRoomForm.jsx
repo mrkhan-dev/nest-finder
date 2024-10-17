@@ -99,7 +99,7 @@ const AddRoomForm = ({
                   </label>
                 </div>
               </div>
-              <div className="h-16 w-16 overflow-hidden object-cover ">
+              <div className="h-20 w-16 overflow-hidden object-cover flex items-center  ">
                 {imagePreview && <img src={imagePreview} />}
               </div>
             </div>
