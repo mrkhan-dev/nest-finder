@@ -82,9 +82,22 @@ async function run() {
     // save a user data in db
     app.put("/user", async (req, res) => {
       const user = req.body;
+      const query = {email: user?.email};
+
+      // check existing user
+      const isExist = await usersCollection.findOne(query);
+      if (isExist) {
+        if (user.status === "Requested") {
+          const result = await usersCollection.updateOne(query, {
+            $set: {status: user?.status},
+          });
+          return res.send(result);
+        } else {
+          return res.send(isExist);
+        }
+      }
 
       const options = {upsert: true};
-      const query = {email: user?.email};
       const updatedDoc = {
         $set: {
           ...user,
@@ -96,6 +109,20 @@ async function run() {
         updatedDoc,
         options
       );
+      res.send(result);
+    });
+
+    // get all users from database
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
+
+    // get a user info from db
+    app.get("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await usersCollection.findOne({email});
+      res.send(result);
     });
 
     // get all rooms
