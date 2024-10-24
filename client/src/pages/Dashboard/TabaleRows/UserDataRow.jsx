@@ -2,11 +2,39 @@ import PropTypes from "prop-types";
 import UpdateUserModal from "../../../components/Modal/UpdateUserModal";
 import {useState} from "react";
 import toast from "react-hot-toast";
+import {useMutation} from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 const UserDataRow = ({user, refetch}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const axiosSecure = useAxiosSecure();
+  const {mutateAsync} = useMutation({
+    mutationFn: async (role) => {
+      const {data} = await axiosSecure.patch(
+        `/users/update/${user?.email}`,
+        role
+      );
+      return data;
+    },
+    onSuccess: (data) => {
+      refetch();
+      setIsOpen(false);
+      console.log(data);
+      toast.success("User role updated successful.");
+    },
+  });
 
-  const modalHandler = () => {
-    toast.success("Role updated");
+  const modalHandler = async (selected) => {
+    console.log(selected);
+    const userRole = {
+      role: selected,
+      status: "Verified",
+    };
+    try {
+      await mutateAsync(userRole);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -48,6 +76,7 @@ const UserDataRow = ({user, refetch}) => {
           user={user}
           modalHandler={modalHandler}
           setIsOpen={setIsOpen}
+          refetch={refetch}
         />
       </td>
     </tr>
